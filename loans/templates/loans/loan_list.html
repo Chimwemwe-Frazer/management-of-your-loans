@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Loans</title>
+</head>
+<body>
+    <h1>My Loans</h1>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li style="color: green;">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <a href="{% url 'apply_for_loan' %}">Apply for Loan</a>
+    <br><br>
+
+
+    {% if loans %}
+        <table border="1" cellpadding="8">
+            <tr>
+                <th>Borrower</th>
+                <th>Amount</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Remaining balance</th>
+                <th>Action</th>
+            </tr>
+
+            {% for loan in loans %}
+            <tr>
+                <td>{{ loan.borrower.name }}</td>
+                <td>{{ loan.amount }}</td>
+                <td>{{ loan.due_date }}</td>
+                <td>
+                    
+                    {% if loan.is_paid %}
+                        Paid
+                    {% else %}
+                        Not Paid
+                    {% endif %}
+                </td>
+                
+                <td>{{ loan.remaining_balance }}</td>
+
+                <td>
+                    {% if loan.remaining_balance > 0 %}
+                        <a href="{% url 'make_payment' loan.id %}">
+                            <button>Make Payment</button>
+                        </a>
+                    {% else %}
+                        Paid
+                    {% endif %}
+                </td>
+
+
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No loans available.</p>
+    {% endif %}
+
+   <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+
+
+</body>
+</html>
