@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+
 
 # Create your models here.
 class Borrower(models.Model):
@@ -18,6 +20,7 @@ class Loan(models.Model):
     due_date = models.DateField()
     is_paid = models.BooleanField(default=False)
 
+    
     def __str__(self):
         return f"Loan to {self.borrower.name}"
 
@@ -26,6 +29,14 @@ class Loan(models.Model):
 
     def remaining_balance(self):
         return self.amount - self.total_paid()
+    
+    def is_overdue(self):
+        return not self.is_paid and timezone.now().date() > self.due_date
+    
+    def days_overdue(self):
+        if self.is_overdue():
+            return (timezone.now().date() - self.due_date).days
+        return 0
 
 
 class Payment(models.Model):

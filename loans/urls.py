@@ -9,6 +9,9 @@ urlpatterns = [
     path('loans/', views.loan_list, name='loan_list'),
     path('apply/', views.apply_for_loan, name='apply_for_loan'),
     path('accounts/', include('django.contrib.auth.urls')),
-    # path('apply/', login_required(views.apply_for_loan), name='apply_loan'),
     path('pay/<int:loan_id>/', views.make_payment, name='make_payment'),
+    path('loan/<int:loan_id>/payments/', views.payment_history, name='payment_history'),
+    path('dashboard/', views.dashboard, name='dashboard')
+
+
 ]

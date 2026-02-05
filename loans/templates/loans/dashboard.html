@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Loan Dashboard</h1>
+
+        <p>Total Loans: {{ total_loans }}</p>
+        <p>Total Loaned Amount: {{ total_loaned_amount }}</p>
+        <p>Total Paid: {{ total_paid }}</p>
+        <p>Total Remaining: {{ total_remaining }}</p>
+        <p>Overdue Loans: {{ overdue_loans|length }}</p>
+
+        <h2>Loan Details</h2>
+        <table border="1" cellpadding="8">
+            <tr>
+                <th>Loan Amount</th>
+                <th>Remaining Balance</th>
+                <th>Status</th>
+                <th>Days Overdue</th>
+            </tr>
+            {% for loan in loans %}
+            <tr>
+                <td>{{ loan.amount }}</td>
+                <td>{{ loan.remaining_balance }}</td>
+                <td>
+                    {% if loan.is_paid %}
+                        Paid
+                    {% elif loan.is_overdue %}
+                        Overdue
+                    {% else %}
+                        Active
+                    {% endif %}
+                </td>
+                <td>
+                    {% if loan.is_overdue %}
+                        {{ loan.days_overdue }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+</body>
+</html>

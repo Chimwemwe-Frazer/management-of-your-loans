@@ -27,6 +27,7 @@
                 <th>Status</th>
                 <th>Remaining balance</th>
                 <th>Action</th>
+                <th>History</th>
             </tr>
 
             {% for loan in loans %}
@@ -34,14 +35,29 @@
                 <td>{{ loan.borrower.name }}</td>
                 <td>{{ loan.amount }}</td>
                 <td>{{ loan.due_date }}</td>
-                <td>
-                    
+                <!-- <td>
                     {% if loan.is_paid %}
-                        Paid
+                        <span style="color:green; font-weight:bold;">Paid</span>
+                    {% elif loan.is_overdue %}
+                        <span style="color:red; font-weight:bold;">Overdue</span>
                     {% else %}
-                        Not Paid
+                        <span style="color:orange; font-weight:bold;">Active</span>
+                    {% endif %}
+                </td> -->
+                <td>
+                    {% if loan.is_paid %}
+                        <span style="color:rgb(0, 128, 0); font-weight:bold;">Paid</span>
+                    {% elif loan.is_overdue %}
+                        <span style="color:red; font-weight:bold;">
+                            Overdue ({{ loan.days_overdue }} days)
+                        </span>
+                    {% else %}
+                        <span style="color:orange; font-weight:bold;">Active</span>
                     {% endif %}
                 </td>
+
+
+
                 
                 <td>{{ loan.remaining_balance }}</td>
 
@@ -51,10 +67,15 @@
                             <button>Make Payment</button>
                         </a>
                     {% else %}
-                        Paid
+                        <strong style="color: rgb(0, 128, 0);">Paid</strong>
                     {% endif %}
-                </td>
 
+                </td>
+                <td>
+                    <a href="{% url 'payment_history' loan.id %}">
+                        <button>Payment History</button>
+                    </a>
+                </td>
 
             </tr>
             {% endfor %}
