@@ -92,24 +92,6 @@ def make_payment(request, loan_id):
 
 
 @login_required
-# def payment_history(request, loan_id):
-#     loan = get_object_or_404(
-#         Loan,
-#         id=loan_id,
-#         borrower__user=request.user
-#     )
-
-#     payments = loan.payment_set.order_by('-date_paid')
-
-#     context = {
-#         'loan': loan,
-#         'payments': payments,
-#         'total_paid': loan.total_paid(),
-#         'remaining_balance': loan.remaining_balance(),
-#     }
-
-#     return render(request, 'loans/payment_history.html', context)
-
 def payment_history(request, loan_id):
     loan = get_object_or_404(Loan, id=loan_id, borrower__user=request.user)
     payments = loan.payment_set.order_by('date_paid')  # ensure chronological order
