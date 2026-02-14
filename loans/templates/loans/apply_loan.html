@@ -1,36 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Apply for Loan</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block content %}
     <h2>Apply for a Loan</h2>
 
-    <form method="post">
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <a href="{% url 'upload_documents' %}">Upload Documents</a>
-        <label>Amount:</label><br>
-        <input type="number" name="amount" required><br><br>
 
-        <button type="submit">Apply</button>
+            <label>Loan Amount</label>
+            <input type="number" name="amount" required>
+
+        {% if not has_previous_loan %}
+            <hr>
+            <h4>Required for First Loan Only</h4>
+
+            <label>Upload National ID</label>
+            <input type="file" name="national_id_image" accept="image/*" required>
+            <br>
+
+            <label>Upload Residence Map</label>
+            <input type="file" name="residence_map_image" accept="image/*" required>
+        {% endif %}
+            <br>
+
+            <button type="submit">Apply for Loan</button>
     </form>
-
-
-        <!-- <label>Name:</label><br>
-        <input type="text" name="name" required><br><br>
-
-        <label>Phone:</label><br>
-        <input type="text" name="phone" required><br><br> -->
-    <!-- <form method="post">
-         {% csrf_token %}
-
-        <label>Loan Amount:</label><br>
-        <input type="number" name="amount" step="500" required><br><br>
-
-        <button type="submit">Apply</button>
-    </form> -->
 
     <br>
     <a href="{% url 'loan_list' %}">Back to My Loans</a>
-</body>
-</html>
+{% endblock %}
+

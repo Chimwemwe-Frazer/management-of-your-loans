@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loan Management System</title>
+</head>
+<body>
+
+    <nav style="margin-bottom: 20px;">
+        {% if request.user.is_authenticated %}
+
+            {% if request.user.is_superuser %}
+                <a href="{% url 'dashboard' %}">Dashboard</a> |
+            {% endif %}
+
+            <a href="{% url 'loan_list' %}">My Loans</a> |
+            <a href="{% url 'apply_for_loan' %}">Apply</a> |
+
+            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+
+        {% endif %}
+    </nav>
+
+    <hr>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p style="
+                {% if message.tags == 'error' %}color:red;
+                {% elif message.tags == 'success' %}color:green;
+                {% elif message.tags == 'warning' %}color:orange;
+                {% endif %}
+            ">
+                {{ message }}
+            </p>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>

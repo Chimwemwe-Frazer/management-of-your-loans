@@ -3,19 +3,40 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 
-# Create your models here.
+# creation of models
 class Borrower(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100) 
     phone = models.CharField(max_length=20)
     address = models.TextField(blank=True)
-
+    national_id_image = models.ImageField(
+        upload_to="national_ids/",
+        null=True,
+        blank=True
+    )
+    residence_map_image = models.ImageField(
+        upload_to="residence_maps/",
+        null=True,
+        blank=True
+    )
+    def has_uploaded_documents(self):
+        return self.national_id_image and self.residence_map_image
+    
     def __str__(self):
         return self.name
 
 class Loan(models.Model):
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+
+    
     borrower = models.ForeignKey(Borrower, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     date_given = models.DateField(auto_now_add=True)
     due_date = models.DateField()
     is_paid = models.BooleanField(default=False)

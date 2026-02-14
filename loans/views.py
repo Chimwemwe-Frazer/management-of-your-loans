@@ -34,25 +34,52 @@ def register(request):
 
 @login_required
 def apply_for_loan(request):
+    if request.user.is_superuser:
+        messages.error(request, "Admins cannot apply for loans.")
+        return redirect("loan_list")
+
     borrower = get_object_or_404(Borrower, user=request.user)
 
-    if request.method == "POST":
-        amount = request.POST.get("amount")
+    borrower = Borrower.objects.get(user=request.user)
 
-        date_given = timezone.now().date()
-        due_date = date_given + timedelta(days=30)
+    has_previous_loan = Loan.objects.filter(borrower=borrower).exists()
+
+    if request.method == "POST":
+        if not has_previous_loan:
+            national_id = request.FILES.get("national_id_image")
+            residence_map = request.FILES.get("residence_map_image")
+
+            if not national_id or not residence_map:
+                messages.error(
+                    request,
+                    "National ID and Residence Map are required for your first loan."
+                )
+                return redirect("apply_for_loan")
+
+            borrower.national_id_image = national_id
+            borrower.residence_map_image = residence_map
+            borrower.save()
+        amount = request.POST.get("amount")
+        due_date = timezone.now().date() + timedelta(days=30)
 
         Loan.objects.create(
             borrower=borrower,
             amount=amount,
-            due_date=due_date
+            due_date=due_date,
+            status='pending'
         )
 
         messages.success(request, "Loan application submitted successfully.")
         return redirect("loan_list")
 
-    return render(request, "loans/apply_loan.html")
-
+    return render(
+        request,
+        "loans/apply_loan.html",
+        {
+            "has_previous_loan": has_previous_loan,
+            "borrower": borrower
+        }
+    )
 
 @login_required
 def loan_list(request):
