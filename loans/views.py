@@ -114,6 +114,7 @@ def payment_history(request, loan_id):
         'remaining_balance': loan.remaining_balance(),
     })
 
+@login_required
 def dashboard(request):
     borrower = request.user.borrower
     loans = borrower.loan_set.all()
@@ -132,6 +133,15 @@ def dashboard(request):
         'total_remaining': total_remaining,
         'overdue_loans': overdue_loans,
     })
+@login_required
+def upload_documents(request):
+    borrower = Borrower.objects.get(user=request.user)
 
+    if request.method == "POST":
+        borrower.national_id_image = request.FILES.get('national_id_image')
+        borrower.residence_map_image = request.FILES.get('residence_map_image')
+        borrower.save()
+
+    return render(request, "upload_documents.html")
 
 

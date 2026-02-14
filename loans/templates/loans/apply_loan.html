@@ -8,7 +8,7 @@
 
     <form method="post">
         {% csrf_token %}
-
+        <a href="{% url 'upload_documents' %}">Upload Documents</a>
         <label>Amount:</label><br>
         <input type="number" name="amount" required><br><br>
 
