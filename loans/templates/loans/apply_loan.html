@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Apply for a Loan</h2>
+    <h1>Apply for a Loan</h1>
 
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
             <label>Loan Amount</label>
-            <input type="number" name="amount" required>
+            <input type="number" name="amount" step="500" min="500" required>
 
         {% if not has_previous_loan %}
             <hr>
@@ -20,7 +20,7 @@
             <label>Upload Residence Map</label>
             <input type="file" name="residence_map_image" accept="image/*" required>
         {% endif %}
-            <br>
+            <br><br>
 
             <button type="submit">Apply for Loan</button>
     </form>

@@ -5,6 +5,8 @@ from django.contrib.auth import login
 from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
+from django.db.models import Q
+
 
 from .models import Borrower, Loan, Payment
 
@@ -37,11 +39,17 @@ def apply_for_loan(request):
     if request.user.is_superuser:
         messages.error(request, "Admins cannot apply for loans.")
         return redirect("loan_list")
-
+    
     borrower = get_object_or_404(Borrower, user=request.user)
+    total_loans = Loan.objects.filter(
+        borrower=borrower,
+        is_paid=False
+        ).count()
 
-    borrower = Borrower.objects.get(user=request.user)
-
+    if total_loans >= 10:
+        messages.error(request, "You have reached the maximum of 10 loan applications excluding the paid ones.")
+        return redirect("loan_list") 
+    
     has_previous_loan = Loan.objects.filter(borrower=borrower).exists()
 
     if request.method == "POST":
@@ -82,9 +90,25 @@ def apply_for_loan(request):
     )
 
 @login_required
-def loan_list(request):
-    loans = Loan.objects.filter(borrower__user=request.user)
-    return render(request, "loans/loan_list.html", {"loans": loans})
+def loan_list(request):    
+    borrower = request.user.borrower
+    three_days_ago = timezone.now().date() - timedelta(days=3)
+
+    loans = Loan.objects.filter(
+        borrower=borrower
+    ).filter(
+        Q(is_paid=False) | Q(paid_date__gte=three_days_ago)
+    )
+
+    paid_loans_exist = Loan.objects.filter(
+        borrower=borrower,
+        is_paid=True
+    ).exists()
+
+    return render(request, "loans/loan_list.html", {
+        "loans": loans,
+        "paid_loans_exist": paid_loans_exist,
+    })
 
 
 @login_required
@@ -107,6 +131,7 @@ def make_payment(request, loan_id):
 
             # Update is_paid if loan is fully repaid
             if loan.remaining_balance() == 0:
+                loan.paid_date = timezone.now().date()
                 loan.is_paid = True
                 loan.save()
 

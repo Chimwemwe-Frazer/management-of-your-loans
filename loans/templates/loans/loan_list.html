@@ -2,24 +2,16 @@
 
 {% block content %}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>My Loans</title>
-</head>
-<body>
     <h1>My Loans</h1>
 
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li style="color: green;">{{ message }}</li>
-            {% endfor %}
-        </ul>
+    {% if paid_loans_exist %}
+        <p style="color: gray; font-size: 14px;">
+            Fully paid loans remain visible for 3 days before moving to loan history.
+        </p>
     {% endif %}
 
-    <a href="{% url 'apply_for_loan' %}">Apply for Loan</a>
-    <br><br>
+    <!-- <a href="{% url 'apply_for_loan' %}">Apply for Loan</a>
+    <br><br> -->
 
 
     {% if loans %}
@@ -104,14 +96,5 @@
     {% else %}
         <p>No loans available.</p>
     {% endif %}
-
-   <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
-
-
-</body>
-</html>
 {% endblock %}
 
