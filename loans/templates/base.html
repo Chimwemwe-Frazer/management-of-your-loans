@@ -1,31 +1,52 @@
-{% load static %}
+{% load tailwind_tags %} {% load static %}
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{% static 'css/output.css' %}" rel="stylesheet">
     <title>Loan Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+        extend: {
+            colors: {
+            'loan-dark': '#06262d', // This is the color from your image  '#011e20f1'
+            }
+        }
+        }
+    }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    {% tailwind_css %}
 </head>
-<body>
+<body class="bg-[#06262d] min-h-screen flex flex-col">
 
-    <nav style="margin-bottom: 20px;">
+    <nav class="flex justify-end items-center space-between gap-6 p-4 bg-amber-800/70 shadow-lg ">
         {% if request.user.is_authenticated %}
 
             {% if request.user.is_superuser %}
-                <a href="{% url 'dashboard' %}">Dashboard</a> |
+                <a href="{% url 'dashboard' %}">DASHBOARD</a>
             {% endif %}
 
-            <a href="{% url 'loan_list' %}">My Loans</a> |
-            <a href="{% url 'apply_for_loan' %}">Apply</a> |
-            <a href="{% url 'dashboard' %}">Dashboard</a> |
+            <a href="{% url 'loan_list' %}"    class="px-4 py-2 rounded-md bg-gray-500/25 text-white/90
+            hover:bg-gray-500/65 transition-all ease-in-out duration-1000 hover:scale-105">MY LOANS</a>
+            <a href="{% url 'apply_for_loan' %}"    class="px-4 py-2 rounded-md bg-gray-500/25 text-white/90
+            hover:bg-gray-500/65 transition-all ease-in-out duration-1000 hover:scale-105">APPLY</a>
+            <a href="{% url 'dashboard' %}"    class="px-4 py-2 rounded-md bg-gray-500/25 text-white/90
+            hover:bg-gray-500/65 transition-all ease-in-out duration-1000 hover:scale-105">DASHBOARD</a> |
             <form method="post" action="{% url 'logout' %}" style="display:inline;">
                 {% csrf_token %}
-                <button type="submit">Logout</button>
+                <button type="submit"  class="px-4 py-2 rounded-md bg-red-700 text-white
+                hover:bg-red-600 transition-all ease-in-out duration-1000 hover:scale-105">LOGOUT</button>
             </form>
 
         {% endif %}
     </nav>
 
-    <hr>
+    <!-- <hr> -->
     {% if messages %}
         {% for message in messages %}
             <p style="
@@ -39,9 +60,93 @@
         {% endfor %}
     {% endif %}
 
-    {% block content %}
-    
-    {% endblock %}
+   <main class="flex-grow pb-20">
+        {% block content %}
+        {% endblock %}
+    </main>
+  
+    <hr class="border-gray-600"> 
+   <!-- FOOTER -->
+    <footer class="bg-black/40 text-gray-400 py-5 mt-auto ">
+            <!-- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center py-6 text-sm">
+            <span>&copy; 2026 Loan Management System</span><br>
+            <span>by Chimwemwe Frazer</span>
+            </div> -->
+            
+            <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8">
+                       <!-- About -->
+                 <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">
+                        Quick Links
+                    </h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="{% url 'dashboard' %}" class="hover:text-white transition">Dashboard</a></li>
+                        <li><a href="{% url 'apply_for_loan' %}" class="hover:text-white transition">Apply for Loan</a></li>
+                        <li><a href="{% url 'loan_list' %}" class="hover:text-white transition">My Loans</a></li>
+                        
+                    </ul>
+                </div>
 
+                <!-- Contact -->
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-3">Contact Me</h3>
+                    <p class="text-sm flex items-center gap-4 mb-2">
+                        <i class="fa-solid fa-phone"></i>
+                        <a href="tel:+265 889 538 989" class="hover:text-white transition">
+                            +265 889 538 989
+                        </a>
+                        
+                    </p>
+                    <p class="text-sm flex items-center gap-4 mb-2">
+                        <i class="fa-solid fa-envelope"></i>
+                        <a href="mailto:chimwemwefrazer10@gmail.com" class="hover:text-white transition duration-300">
+                            chimwemwefrazer10@gmail.com
+                        </a>
+                    </p>
+                    <p class="text-sm flex items-center gap-4 mb-2">
+                         <i class="fa-solid fa-location-dot"></i>
+                            Blantyre, Malawi
+                    </p>
+                </div>
+
+                <!-- Social -->
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-3">Follow Us</h3>
+                    <div class="flex gap-4 text-xl">
+                        <a href="https://facebook.com/Chimwemwe Frazer" 
+                        target="_blank" 
+                        class="hover:text-blue-500 transition duration-300">
+                            <i class="fa-brands fa-facebook"></i>
+                        </a>
+
+                        <a href="https://twitter.com/Chim Frazer" 
+                        target="_blank" 
+                        class="hover:text-sky-400 transition duration-300">
+                            <i class="fa-brands fa-twitter"></i>
+                        </a>
+
+                        <a href="https://instagram.com/Chimwemwe Frazer" 
+                        target="_blank" 
+                        class="hover:text-pink-500 transition duration-300">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+
+                        <a href="https://linkedin.com/in/Chimwemwe Frazer" 
+                        target="_blank" 
+                        class="hover:text-blue-600 transition duration-300">
+                            <i class="fa-brands fa-linkedin"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="text-center text-sm mt-8 border-t border-gray-900 pt-2">
+                © 2026 Chimwemwe Frazer. All rights reserved.
+            </div>    
+    </footer>
 </body>
+  
 </html>

@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'loans.apps.LoansConfig',
+    'tailwind',
+    'theme'
 ]
 
 MIDDLEWARE = [
@@ -104,7 +106,9 @@ LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/loans/'
 LOGOUT_REDIRECT_URL = "/"
 
-
+#session mngmnt
+SESSION_COOKIE_AGE = 300  # 5 minutes
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 # Internationalization
@@ -129,3 +133,10 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
+
+TAILWIND_APP_NAME = 'theme'
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]

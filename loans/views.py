@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView
+from .forms import StyledAuthenticationForm
+from django.views.decorators.cache import never_cache
+from django.urls import reverse_lazy
 from django.contrib.auth import login
 from django.contrib import messages
 from django.utils import timezone
@@ -35,6 +39,7 @@ def register(request):
 
 
 @login_required
+@never_cache
 def apply_for_loan(request):
     if request.user.is_superuser:
         messages.error(request, "Admins cannot apply for loans.")
@@ -90,6 +95,7 @@ def apply_for_loan(request):
     )
 
 @login_required
+@never_cache
 def loan_list(request):    
     borrower = request.user.borrower
     three_days_ago = timezone.now().date() - timedelta(days=3)
@@ -112,6 +118,7 @@ def loan_list(request):
 
 
 @login_required
+@never_cache
 def make_payment(request, loan_id):
     loan = get_object_or_404(Loan, id=loan_id, borrower__user=request.user)
 
@@ -144,6 +151,7 @@ def make_payment(request, loan_id):
 
 
 @login_required
+@never_cache
 def payment_history(request, loan_id):
     loan = get_object_or_404(Loan, id=loan_id, borrower__user=request.user)
     payments = loan.payment_set.order_by('date_paid')  # ensure chronological order
@@ -167,6 +175,7 @@ def payment_history(request, loan_id):
     })
 
 @login_required
+@never_cache
 def dashboard(request):
     borrower = request.user.borrower
     loans = borrower.loan_set.all()
@@ -186,6 +195,7 @@ def dashboard(request):
         'overdue_loans': overdue_loans,
     })
 @login_required
+@never_cache
 def upload_documents(request):
     borrower = Borrower.objects.get(user=request.user)
 
@@ -197,3 +207,19 @@ def upload_documents(request):
     return render(request, "upload_documents.html")
 
 
+# class CustomLoginView(LoginView):
+#     template_name = 'registration/login.html'
+#     authentication_form = StyledAuthenticationForm
+    
+# class CustomLoginView(LoginView):
+#     template_name = 'registration/login.html'
+#     authentication_form = StyledAuthenticationForm
+#     redirect_authenticated_user = True
+
+#     def get_success_url(self):
+#         return self.request.GET.get('next') or '/loan_list/'
+class CustomLoginView(LoginView):
+    template_name = 'registration/login.html'
+    authentication_form = StyledAuthenticationForm
+    redirect_authenticated_user = True
+    success_url = reverse_lazy('loan_list')

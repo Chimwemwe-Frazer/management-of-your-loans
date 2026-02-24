@@ -2,11 +2,11 @@
 
 {% block content %}
 
-    <h1>My Loans</h1>
-   
+       
     {% if paid_loans_exist %}
-        <p style="color: gray; font-size: 14px;">
-            Fully paid loans remain visible for 3 days before moving to loan history.
+    <!-- text-[#f9e60c] -->
+        <p class="mt-5 mb-1 ml-2 text-amber-400">       
+            Fully paid loans remain visible for 3 days.
         </p>
     {% endif %}
 
@@ -15,32 +15,24 @@
 
 
     {% if loans %}
-        <table border="1" cellpadding="8">
+        <table class="w-full border border border-teal-900 border-collapse font-normal text-white/75 shadow-lg ">
             <tr>
-                <th>Borrower</th>
-                <th>Amount</th>
-                <th>Due Date</th>
-                <th>Status</th>
-                <th>Remaining balance</th>
-                <th>Action</th>
-                <th>History</th>
+                <th class="border border-teal-900 bg-gray-500/25 px-4 py-2">BORROWER</th>
+                <th class="border border-teal-900 bg-gray-500/25 px-4 py-2">AMOUNT</th>
+                <th class="border border-teal-900 bg-gray-500/25 px-4 py-2">DUE DATE</th>
+                <th class="border border-teal-900 bg-gray-500/25 px-4 py-2">STATUS</th>
+                <th class="border border-teal-900 bg-gray-500/25 px-4 py-2">REMAINING BALANCE</th>
+                <th class="border border-teal-900 bg-gray-500/25 px-4 py-2">ACTION</th>
+                <th class="border border-teal-900 bg-gray-500/25 px-4 py-2">HISTORY</th>
             </tr>
 
             {% for loan in loans %}
             <tr>
-                <td>{{ loan.borrower.name }}</td>
-                <td>{{ loan.amount }}</td>
-                <td>{{ loan.due_date }}</td>
-                <!-- <td>
-                    {% if loan.is_paid %}
-                        <span style="color:green; font-weight:bold;">Paid</span>
-                    {% elif loan.is_overdue %}
-                        <span style="color:red; font-weight:bold;">Overdue</span>
-                    {% else %}
-                        <span style="color:orange; font-weight:bold;">Active</span>
-                    {% endif %}
-                </td> -->
-             <td>
+                <td class="uppercase border border border-teal-900 px-4 py-2">{{ loan.borrower.name }}</td>
+                <td class="uppercase border border border-teal-900 px-4 py-2">{{ loan.amount }}</td>
+                <td class="uppercase border border border-teal-900 px-4 py-2">{{ loan.due_date }}</td>
+                
+             <td class="border border border-teal-900 px-4 py-2"> 
                 {% if loan.is_paid %}
                     <span style="color:rgb(0, 128, 0); font-weight:bold;">Paid</span>
 
@@ -51,13 +43,13 @@
 
                 {% else %}
                     {% if loan.status == "approved" %}
-                        <span style="color: green; font-weight:bold;">Loan Active</span>
+                        <span style="color: green; font-weight:bold;">LOAN ACTIVE</span>
 
                     {% elif loan.status == "pending" %}
-                        <span style="color: orange; font-weight:bold;">Pending Approval</span>
+                        <span style="color: orange; font-weight:bold;">PENDING APPROVAL</span>
 
                     {% elif loan.status == "rejected" %}
-                        <span style="color: red; font-weight:bold;">Loan Rejected</span>
+                        <span style="color: red; font-weight:bold;">LOAN REJECTED</span>
                     {% endif %}
                 {% endif %}
             </td>
@@ -66,12 +58,16 @@
 
 
                 
-                <td>{{ loan.remaining_balance }}</td>
+                <td class="uppercase border border border-teal-900 px-4 py-2">{{ loan.remaining_balance }}</td>
 
-                <td>
+                <td class="uppercase border border border-teal-900 px-4 py-2">
                     {% if loan.status == "approved" and loan.remaining_balance > 0 %}
                         <a href="{% url 'make_payment' loan.id %}">
-                            <button>Make Payment</button>
+                            <button class="px-4 py-2 rounded-md font-normal text-white/80 text-sm
+                            bg-cyan-700 text-white
+                            transition-all duration-1000 ease-in-out
+                            hover:bg-cyan-600 hover:scale-105">
+                            MAKE PAYMENT</button>
                         </a>
                     {% elif loan.status == "approved" and loan.remaining_balance == 0 %}
                         <strong style="color: green;">Paid</strong>
@@ -80,21 +76,25 @@
                     {% endif %}
 
                 </td>
-                <td>
+                <td class="uppercase border border border-teal-900 px-4 py-2">
                     {% if loan.status == "approved" %}
                         <a href="{% url 'payment_history' loan.id %}">
-                            <button>Payment History</button>
+                            <button class="px-4 py-2 rounded-md font-normal text-white/80 text-sm
+                            bg-purple-800 text-white
+                            transition-all duration-1000 ease-in-out
+                            hover:bg-purple-600 hover:scale-105">PAYMENT HISTORY</button>
                         </a>
                     {% else %}
-                        <span style="color: gray;">No History</span>
+                        <span style="color: gray;">NO HISTORY</span>
                     {% endif %}
                 </td>
 
             </tr>
             {% endfor %}
+            
         </table>
     {% else %}
-        <p>No loans available.</p>
+        <p class="uppercase">No loans available.</p>
     {% endif %}
 {% endblock %}
 

@@ -1,18 +1,95 @@
+{% load static %}
+{% load tailwind_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <!-- <link href="{% static 'css/output.css' %}" rel="stylesheet"> -->
+    <title>login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+        extend: {
+            colors: {
+            'loan-dark': '#06262d', // This is the color from your image  '#011e20f1'
+            }
+        }
+        }
+    }
+    </script>
+    {% tailwind_css %}
 </head>
-<body>
-    <h2>Login</h2>
+<body class="min-h-screen flex items-center justify-center bg-[#06262d]">
+    <div class="text-white w-full max-w-md shadow-lg rounded-lg overflow-hidden shadow-lg">
+        <div class="bg-amber-800/45 py-4"> 
+            <h2 class="text-white text-2xl font-bold text-center">LOGIN</h2>
+        </div>
+        <div class="p-6 bg-gray-600 relative">
+            {% if form.non_field_errors %}
+                <div id="login-error"
+                    class="absolute -top-12 left-1/2 -translate-x-1/2
+                            bg-red-500 text-white px-4 py-2 rounded-md text-sm
+                            shadow-lg opacity-100 transition-opacity duration-500 z-20">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            <form method="post" class="space-y-5">
+                {% csrf_token %}
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Login</button>
-    </form>
+                <div>
+                    <label class="block text-sm font-medium text-white mb-1">
+                       USERNAME
+                    </label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <p class="text-red-400 text-sm mt-1">
+                            {{ form.username.errors.0 }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-white mb-1">
+                        PASSWORD
+                    </label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                        <p class="text-red-400 text-sm mt-1">
+                            {{ form.password.errors.0 }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <div>
+                <button type="submit"
+                        class="w-full border border- white transition-all duration-1000 ease-in-out bg-transparent hover:bg-amber-950/95 text-white font-semibold py-2 rounded-md mb-7">
+                    LOGIN
+                </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const errorBox = document.getElementById("login-error");
+
+            if (errorBox) {
+                setTimeout(() => {
+                    errorBox.classList.add("opacity-0");
+
+                    setTimeout(() => {
+                        errorBox.remove();
+                    }, 500); // matches duration-500
+                }, 4000); //disappears after 4 seconds
+            }
+        });
+    </script>
+
 
 </body>
 </html>
