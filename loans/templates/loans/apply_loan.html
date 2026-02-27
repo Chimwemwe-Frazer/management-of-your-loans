@@ -1,31 +1,109 @@
+
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Apply for a Loan</h1>
+<div class="min-h-screen flex items-center justify-center bg-[#06262d] px-4 py-12">
+    
+    <div class="text-white w-full max-w-md rounded-lg overflow-hidden shadow-lg">
 
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
+        <!-- Header -->
+        <div class="bg-amber-800/45 py-4">
+            <h2 class="text-2xl font-bold text-center">
+                APPLY FOR LOANS
+            </h2>
+        </div>
 
-            <label>Loan Amount</label>
-            <input type="number" name="amount" step="500" min="500" required>
+        <!-- Form Body -->
+        <div class="p-6 bg-gray-600 space-y-6">
 
-        {% if not has_previous_loan %}
-            <hr>
-            <h4>Required for First Loan Only</h4>
+            <form method="POST" enctype="multipart/form-data" class="space-y-5">
+                {% csrf_token %}
 
-            <label>Upload National ID</label>
-            <input type="file" name="national_id_image" accept="image/*" required>
-            <br>
+                <!-- Loan Amount -->
+                <div>
+                    <label class="block text-sm font-medium text-white mb-1">
+                        LOAN AMOUNT
+                    </label>
+                    <input 
+                        type="number" 
+                        name="amount" 
+                        step="500" 
+                        min="500" 
+                        required
+                        class="w-full px-3 py-2 rounded-md bg-gray-700 text-white 
+                               border border-gray-400 focus:outline-none 
+                               focus:ring-2 focus:ring-amber-900"
+                        placeholder="Enter amount (minimum 500)"
+                    >
+                </div>
 
-            <label>Upload Residence Map</label>
-            <input type="file" name="residence_map_image" accept="image/*" required>
-        {% endif %}
-            <br><br>
+                {% if not has_previous_loan %}
+                <div class="border-t border-gray-400 pt-4 space-y-4">
+                    <h4 class="text-lg font-semibold text-white">
+                        Required for First Loan Only
+                    </h4>
 
-            <button type="submit">Apply for Loan</button>
-    </form>
+                    <!-- National ID -->
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-1">
+                            UPLOAD NATIONAL ID
+                        </label>
+                        <input 
+                            type="file" 
+                            name="national_id_image" 
+                            accept="image/*" 
+                            required
+                            class="w-full text-sm text-white file:mr-4 file:py-2 file:px-4 
+                                   file:rounded-md file:border-0 
+                                   file:text-sm file:font-semibold 
+                                   file:bg-amber-900 file:text-white 
+                                   hover:file:bg-amber-950"
+                        >
+                    </div>
 
-    <br>
-    <a href="{% url 'loan_list' %}">Back to My Loans</a>
-{% endblock %}
+                    <!-- Residence Map -->
+                    <div>
+                        <label class="block text-sm font-medium text-white mb-1">
+                            UPLOAD RESIDENCE MAP
+                        </label>
+                        <input 
+                            type="file" 
+                            name="residence_map_image" 
+                            accept="image/*" 
+                            required
+                            class="w-full text-sm text-white file:mr-4 file:py-2 file:px-4 
+                                   file:rounded-md file:border-0 
+                                   file:text-sm file:font-semibold 
+                                   file:bg-amber-900 file:text-white 
+                                   hover:file:bg-amber-950"
+                        >
+                    </div>
+                </div>
+                {% endif %}
 
+                <!-- Buttons -->
+                <div class="pt-4 space-y-4">
+
+                    <!-- Apply Button -->
+                    <button type="submit"
+                        class="w-full border border-white transition-all duration-1000 ease-in-out 
+                               bg-transparent hover:bg-amber-950/95 
+                               text-white font-semibold py-2 rounded-md">
+                        APPLY FOR LOAN
+                    </button>
+
+                    <!-- Back Button -->
+                    <a href="{% url 'loan_list' %}"
+                       class="block text-center w-full border border-white 
+                              bg-transparent hover:bg-gray-700 
+                              text-white font-semibold py-2 rounded-md transition">
+                        BACK TO MY LOANS
+                    </a>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

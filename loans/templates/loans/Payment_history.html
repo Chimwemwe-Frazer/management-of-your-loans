@@ -1,34 +1,97 @@
 {% extends "base.html" %}
 
 {% block content %}
-    
-    <h1>Payment History</h1>
-        <p>Loan Amount: {{ loan.amount }}</p>
-        <p>Total Paid: {{ total_paid }}</p>
-        <p>Remaining Balance: {{ remaining_balance }}</p>
+<div class="min-h-screen bg-[#06262d] px-4 py-12">
 
-        <table border="1" cellpadding="8">
-            <tr>
-                <th>Date Paid</th>
-                <th>Amount Paid</th>
-                <th>Remaining Balance</th>
-            </tr>
+    <div class="w-full max-w-4xl mx-auto text-white rounded-lg overflow-hidden shadow-lg">
 
-            {% for payment in payments %}
-            <tr>
-                <td>{{ payment.date_paid|date:"M. j, Y" }}</td>
-                <td>{{ payment.amount_paid }}</td>
-                <td>{{ payment.remaining_balance }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="3">No payments made yet.</td>
-            </tr>
-            {% endfor %}
-        </table>
-    <br>
+        <!-- Header -->
+        <div class="bg-amber-800/45 py-4">
+            <h2 class="text-2xl font-bold text-center">
+                PAYMENT HISTORY
+            </h2>
+        </div>
 
-    <a href="{% url 'loan_list' %}">Back to My Loans</a>
-</body>
-</html>
+        <!-- Body -->
+        <div class="p-6 bg-gray-600 space-y-8">
+
+            <!-- Loan Summary -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+
+                <div class="bg-gray-700 p-4 rounded-md">
+                    <p class="text-sm text-gray-300">Loan Amount</p>
+                    <p class="text-lg font-bold">{{ loan.amount }}</p>
+                </div>
+
+                <div class="bg-gray-700 p-4 rounded-md">
+                    <p class="text-sm text-gray-300">Total Paid</p>
+                    <p class="text-lg font-bold text-green-400">{{ total_paid }}</p>
+                </div>
+
+                <div class="bg-gray-700 p-4 rounded-md">
+                    <p class="text-sm text-gray-300">Remaining Balance</p>
+                    <p class="text-lg font-bold text-amber-400">
+                        {{ remaining_balance }}
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Payments Table -->
+            <div>
+                <h3 class="text-xl font-semibold mb-4 text-center">
+                    Payment Records
+                </h3>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left border-collapse">
+
+                        <thead>
+                            <tr class="bg-gray-700 text-gray-200 uppercase text-xs tracking-wider">
+                                <th class="p-3">Date Paid</th>
+                                <th class="p-3">Amount Paid</th>
+                                <th class="p-3">Remaining Balance</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for payment in payments %}
+                            <tr class="border-t border-gray-500 hover:bg-gray-700 transition duration-300">
+                                <td class="p-3">
+                                    {{ payment.date_paid|date:"M. j, Y" }}
+                                </td>
+                                <td class="p-3 font-medium text-green-400">
+                                    {{ payment.amount_paid }}
+                                </td>
+                                <td class="p-3 text-amber-400">
+                                    {{ payment.remaining_balance }}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="p-6 text-center text-gray-300">
+                                    No payments made yet.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="pt-4 text-center">
+                <a href="{% url 'loan_list' %}"
+                   class="inline-block px-6 py-2 border border-white 
+                          bg-transparent hover:bg-gray-700
+                          text-white font-semibold rounded-md transition duration-300">
+                    BACK TO MY LOANS
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
 {% endblock %}

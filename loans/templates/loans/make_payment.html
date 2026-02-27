@@ -1,18 +1,62 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="min-h-screen flex items-center justify-center bg-[#06262d] px-4 py-12">
 
-    <h1>Make Payment</h1>
+    <div class="text-white w-full max-w-md rounded-lg overflow-hidden shadow-lg">
 
-    <form method="post">
-        {% csrf_token %}
-        <label>
-            Loan Amount Remaining: {{ loan.remaining_balance }}
-        </label>
-        <br><br>
-        <label>Payment Amount:</label>
-        <input type="number" name="amount" step="500" required><br><br>
-        <button type="submit">Submit Payment</button>
-    </form>
+        <!-- Header -->
+        <div class="bg-amber-800/45 py-4">
+            <h2 class="text-2xl font-bold text-center">
+                MAKE PAYMENT
+            </h2>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6 bg-gray-600 space-y-6">
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- Remaining Balance -->
+                <div class="bg-gray-700 p-4 rounded-md text-center">
+                    <p class="text-sm text-gray-300">
+                        Loan Amount Remaining
+                    </p>
+                    <p class="text-xl font-bold text-amber-400">
+                        {{ loan.remaining_balance }}
+                    </p>
+                </div>
+
+                <!-- Payment Input -->
+                <div>
+                    <label class="block text-sm font-medium text-white mb-2">
+                        PAYMENT AMOUNT
+                    </label>
+                    <input 
+                        type="number" 
+                        name="amount" 
+                        step="500" 
+                        required
+                        class="w-full px-3 py-2 rounded-md bg-gray-700 text-white 
+                               border border-gray-400 focus:outline-none 
+                               focus:ring-2 focus:ring-amber-900"
+                        placeholder="Enter payment amount"
+                    >
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit"
+                    class="w-full border border-white transition-all duration-300
+                           bg-transparent hover:bg-amber-950/95
+                           text-white font-semibold py-2 rounded-md">
+                    SUBMIT PAYMENT
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
 {% endblock %}
-

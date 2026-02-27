@@ -11,11 +11,11 @@
     <script>
     tailwind.config = {
         theme: {
-        extend: {
-            colors: {
-            'loan-dark': '#06262d', // This is the color from your image  '#011e20f1'
+            extend: {
+                colors: {
+                    'loan-dark': '#06262d',
+                }
             }
-        }
         }
     }
     </script>
@@ -24,129 +24,151 @@
 </head>
 <body class="bg-[#06262d] min-h-screen flex flex-col">
 
-    <nav class="flex justify-end items-center space-between gap-6 p-4 bg-amber-800/70 shadow-lg ">
-        {% if request.user.is_authenticated %}
+<!-- NAVBAR -->
+<nav class="bg-amber-800/70 shadow-lg px-4 sm:px-6 py-4">
+    <div class="flex justify-between items-center max-w-7xl mx-auto">
 
-            {% if request.user.is_superuser %}
-                <a href="{% url 'dashboard' %}">DASHBOARD</a>
-            {% endif %}
+        <!-- LOGO -->
+        <a href="{% url 'loan_list' %}" class="flex items-center gap-2">
+            <img src="{% static 'images/logo.png' %}" alt="Logo"
+                 class="h-8 w-8 rounded-full object-cover transition-transform duration-300 group-hover:scale-105">
+            <span class="text-white font-bold text-lg hidden sm:inline">LoanSys</span>
+        </a>
 
-            <a href="{% url 'loan_list' %}"    class="px-4 py-2 rounded-md bg-gray-500/25 text-white/90
-            hover:bg-gray-500/65 transition-all ease-in-out duration-1000 hover:scale-105">MY LOANS</a>
-            <a href="{% url 'apply_for_loan' %}"    class="px-4 py-2 rounded-md bg-gray-500/25 text-white/90
-            hover:bg-gray-500/65 transition-all ease-in-out duration-1000 hover:scale-105">APPLY</a>
-            <a href="{% url 'dashboard' %}"    class="px-4 py-2 rounded-md bg-gray-500/25 text-white/90
-            hover:bg-gray-500/65 transition-all ease-in-out duration-1000 hover:scale-105">DASHBOARD</a> |
-            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+        <!-- MOBILE MENU BUTTON -->
+        <div class="sm:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fa-solid fa-bars fa-lg"></i>
+            </button>
+        </div>
+
+        <!-- NAV LINKS -->
+        <div id="nav-links" class="hidden sm:flex sm:items-center sm:gap-4">
+            <a href="{% url 'loan_list' %}" class="px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:scale-105
+                {% if request.resolver_match.url_name == 'loan_list' %} bg-amber-700/40 text-white border-b-2 border-blue-400 {% else %} text-white/90 hover:bg-amber-800/35 {% endif %}">
+                MY LOANS
+            </a>
+
+            <a href="{% url 'apply_for_loan' %}" class="px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:scale-105
+                {% if request.resolver_match.url_name == 'apply_for_loan' %} bg-amber-700/40 text-white border-b-2 border-blue-400 {% else %} text-white/90 hover:bg-amber-800/35 {% endif %}">
+                APPLY
+            </a>
+
+            <a href="{% url 'dashboard' %}" class="px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:scale-105
+                {% if request.resolver_match.url_name == 'dashboard' %} bg-amber-700/40 text-white border-b-2 border-blue-400 {% else %} text-white/90 hover:bg-amber-800/35 {% endif %}">
+                DASHBOARD
+            </a>
+
+            <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
-                <button type="submit"  class="px-4 py-2 rounded-md bg-red-700 text-white
-                hover:bg-red-600 transition-all ease-in-out duration-1000 hover:scale-105">LOGOUT</button>
+                <button type="submit" class="px-3 py-2 rounded-md bg-red-700 text-white hover:bg-red-600 transition-all duration-300 hover:scale-105 text-sm font-medium">
+                    LOGOUT
+                </button>
             </form>
+        </div>
 
-        {% endif %}
-    </nav>
+    </div>
 
-    <!-- <hr> -->
-    {% if messages %}
+    <!-- MOBILE MENU ITEMS -->
+    <div id="mobile-menu" class="sm:hidden hidden mt-2 space-y-2">
+        <a href="{% url 'loan_list' %}" class="block px-3 py-2 rounded-md text-sm font-medium text-white/90 hover:text-white hover:bg-amber-800/35
+            {% if request.resolver_match.url_name == 'loan_list' %} bg-amber-700/40 {% endif %}">
+            MY LOANS
+        </a>
+        <a href="{% url 'apply_for_loan' %}" class="block px-3 py-2 rounded-md text-sm font-medium text-white/90 hover:text-white hover:bg-amber-800/35
+            {% if request.resolver_match.url_name == 'apply_for_loan' %} bg-amber-700/40 {% endif %}">
+            APPLY
+        </a>
+        <a href="{% url 'dashboard' %}" class="block px-3 py-2 rounded-md text-sm font-medium text-white/90 hover:text-white hover:bg-amber-800/35
+            {% if request.resolver_match.url_name == 'dashboard' %} bg-amber-700/40 {% endif %}">
+            DASHBOARD
+        </a>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="block w-full text-left px-3 py-2 rounded-md bg-red-700 text-white hover:bg-red-600 transition-all duration-300 text-sm font-medium">
+                LOGOUT
+            </button>
+        </form>
+    </div>
+</nav>
+
+{% if messages %}
+    <div id="messages-container" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 space-y-3">
         {% for message in messages %}
-            <p style="
-                {% if message.tags == 'error' %}color:red;
-                {% elif message.tags == 'success' %}color:green;
-                {% elif message.tags == 'warning' %}color:orange;
-                {% endif %}
-            " >
+            <div class="message-item bg-gray-800/90 text-white px-6 py-3 rounded-lg shadow-lg text-center max-w-md mx-auto
+                        {% if message.tags == 'success' %} border-l-4 border-green-400 {% endif %}
+                        {% if message.tags == 'error' %} border-l-4 border-red-500 {% endif %}
+                        {% if message.tags == 'warning' %} border-l-4 border-yellow-400 {% endif %}">
                 {{ message }}
-            </p>
-        {% endfor %}
-    {% endif %}
-
-   <main class="flex-grow pb-20">
-        {% block content %}
-        {% endblock %}
-    </main>
-  
-    <hr class="border-gray-600"> 
-   <!-- FOOTER -->
-    <footer class="bg-black/40 text-gray-400 py-5 mt-auto ">
-            <!-- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center py-6 text-sm">
-            <span>&copy; 2026 Loan Management System</span><br>
-            <span>by Chimwemwe Frazer</span>
-            </div> -->
-            
-            <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8">
-                       <!-- About -->
-                 <!-- Quick Links -->
-                <div>
-                    <h3 class="text-lg font-semibold text-white mb-4">
-                        Quick Links
-                    </h3>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="{% url 'dashboard' %}" class="hover:text-white transition">Dashboard</a></li>
-                        <li><a href="{% url 'apply_for_loan' %}" class="hover:text-white transition">Apply for Loan</a></li>
-                        <li><a href="{% url 'loan_list' %}" class="hover:text-white transition">My Loans</a></li>
-                        
-                    </ul>
-                </div>
-
-                <!-- Contact -->
-                <div>
-                    <h3 class="text-lg font-semibold text-white mb-3">Contact Me</h3>
-                    <p class="text-sm flex items-center gap-4 mb-2">
-                        <i class="fa-solid fa-phone"></i>
-                        <a href="tel:+265 889 538 989" class="hover:text-white transition">
-                            +265 889 538 989
-                        </a>
-                        
-                    </p>
-                    <p class="text-sm flex items-center gap-4 mb-2">
-                        <i class="fa-solid fa-envelope"></i>
-                        <a href="mailto:chimwemwefrazer10@gmail.com" class="hover:text-white transition duration-300">
-                            chimwemwefrazer10@gmail.com
-                        </a>
-                    </p>
-                    <p class="text-sm flex items-center gap-4 mb-2">
-                         <i class="fa-solid fa-location-dot"></i>
-                            Blantyre, Malawi
-                    </p>
-                </div>
-
-                <!-- Social -->
-                <div>
-                    <h3 class="text-lg font-semibold text-white mb-3">Follow Us</h3>
-                    <div class="flex gap-4 text-xl">
-                        <a href="https://facebook.com/Chimwemwe Frazer" 
-                        target="_blank" 
-                        class="hover:text-blue-500 transition duration-300">
-                            <i class="fa-brands fa-facebook"></i>
-                        </a>
-
-                        <a href="https://twitter.com/Chim Frazer" 
-                        target="_blank" 
-                        class="hover:text-sky-400 transition duration-300">
-                            <i class="fa-brands fa-twitter"></i>
-                        </a>
-
-                        <a href="https://instagram.com/Chimwemwe Frazer" 
-                        target="_blank" 
-                        class="hover:text-pink-500 transition duration-300">
-                            <i class="fa-brands fa-instagram"></i>
-                        </a>
-
-                        <a href="https://linkedin.com/in/Chimwemwe Frazer" 
-                        target="_blank" 
-                        class="hover:text-blue-600 transition duration-300">
-                            <i class="fa-brands fa-linkedin"></i>
-                        </a>
-
-                    </div>
-                </div>
-
             </div>
+        {% endfor %}
+    </div>
+{% endif %}
 
-            <div class="text-center text-sm mt-8 border-t border-gray-900 pt-2">
-                © 2026 Chimwemwe Frazer. All rights reserved.
-            </div>    
-    </footer>
+<main class="flex-grow pb-20 px-4 sm:px-6">
+    {% block content %}
+    {% endblock %}
+</main>
+
+<hr class="border-gray-600">
+
+<!-- FOOTER -->
+<footer class="bg-black/40 text-gray-400 py-5 mt-auto px-4 sm:px-6">
+    <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
+        <!-- Quick Links -->
+        <div>
+            <h3 class="text-lg font-semibold text-white/80 mb-4">Quick Links</h3>
+            <ul class="space-y-2 text-sm">
+                <li><a href="{% url 'loan_list' %}" class="hover:text-white {% if request.resolver_match.url_name == 'loan_list' %} text-purple-500 {% endif %}">My Loans</a></li>
+                <li><a href="{% url 'apply_for_loan' %}" class="hover:text-white {% if request.resolver_match.url_name == 'apply_for_loan' %} text-purple-500 {% endif %}">Apply</a></li>
+                <li><a href="{% url 'dashboard' %}" class="hover:text-white {% if request.resolver_match.url_name == 'dashboard' %} text-purple-500 {% endif %}">Dashboard</a></li>
+            </ul>
+        </div>
+
+        <!-- Contact -->
+        <div>
+            <h3 class="text-lg font-semibold text-white/80 mb-3">Contact Me</h3>
+            <p class="text-sm flex items-center gap-4 mb-2"><i class="fa-solid fa-phone"></i> <a href="tel:+265889538989" class="hover:text-white">+265 889 538 989</a></p>
+            <p class="text-sm flex items-center gap-4 mb-2"><i class="fa-solid fa-envelope"></i> <a href="mailto:chimwemwefrazer10@gmail.com" class="hover:text-white">chimwemwefrazer10@gmail.com</a></p>
+            <p class="text-sm flex items-center gap-4 mb-2"><i class="fa-solid fa-location-dot"></i> Lilongwe, Malawi</p>
+        </div>
+
+        <!-- Social -->
+        <div>
+            <h3 class="text-lg font-semibold text-white/80 mb-3">Follow Us</h3>
+            <div class="flex gap-4 text-xl">
+                <a href="https://facebook.com/ChimwemweFrazer/profile" target="_blank" class="hover:text-blue-500 transition duration-300"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://twitter.com/Chim Frazer/profile" target="_blank" class="hover:text-sky-400 transition duration-300"><i class="fa-brands fa-twitter"></i></a>
+                <a href="https://instagram.com/Chimwemwe Frazer/profile" target="_blank" class="hover:text-pink-500 transition duration-300"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://linkedin.com/in/Chimwemwe Frazer/profile" target="_blank" class="hover:text-blue-600 transition duration-300"><i class="fa-brands fa-linkedin"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center text-sm mt-8 border-t border-gray-800 pt-2">
+        © 2026 Chimwemwe Frazer. All rights reserved.
+    </div>
+</footer>
+
+<script>
+const mobileMenuBtn = document.getElementById('mobile-menu-button');
+const mobileMenu = document.getElementById('mobile-menu');
+
+mobileMenuBtn?.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+});
+
+    setTimeout(() => {
+        const messages = document.querySelectorAll('#messages-container .message-item');
+        messages.forEach(msg => {
+            msg.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+            msg.style.opacity = '0';
+            msg.style.transform = 'translateY(-20px)';
+            setTimeout(() => msg.remove(), 500);
+        });
+    }, 3000); // disappear after 3 seconds
+
+</script>
+
 </body>
-  
 </html>

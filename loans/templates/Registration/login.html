@@ -5,43 +5,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link href="{% static 'css/output.css' %}" rel="stylesheet"> -->
-    <title>login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>Login</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+
     <script>
     tailwind.config = {
         theme: {
-        extend: {
-            colors: {
-            'loan-dark': '#06262d', // This is the color from your image  '#011e20f1'
+            extend: {
+                colors: {
+                    'loan-dark': '#06262d',
+                }
             }
-        }
         }
     }
     </script>
+
     {% tailwind_css %}
 </head>
-<body class="min-h-screen flex items-center justify-center bg-[#06262d]">
-    <div class="text-white w-full max-w-md shadow-lg rounded-lg overflow-hidden shadow-lg">
-        <div class="bg-amber-800/45 py-4"> 
-            <h2 class="text-white text-2xl font-bold text-center">LOGIN</h2>
+
+<body class="min-h-screen flex items-center justify-center bg-[#06262d] px-4">
+
+    <div class="text-white w-full max-w-md rounded-lg overflow-hidden shadow-xl">
+
+        <!-- Header -->
+        <div class="bg-amber-800/45 py-4">
+            <h2 class="text-2xl font-bold text-center tracking-wide">
+                LOGIN
+            </h2>
         </div>
-        <div class="p-6 bg-gray-600 relative">
+
+        <!-- Body -->
+        <div class="p-8 bg-gray-600 relative space-y-6">
+
             {% if form.non_field_errors %}
                 <div id="login-error"
                     class="absolute -top-12 left-1/2 -translate-x-1/2
-                            bg-red-500 text-white px-4 py-2 rounded-md text-sm
-                            shadow-lg opacity-100 transition-opacity duration-500 z-20">
+                           bg-red-500 text-white px-4 py-2 rounded-md text-sm
+                           shadow-lg transition-opacity duration-500 z-20">
                     {{ form.non_field_errors }}
                 </div>
             {% endif %}
-            <form method="post" class="space-y-5">
+
+            <form method="post" class="space-y-6">
                 {% csrf_token %}
 
+                <!-- Username -->
                 <div>
-                    <label class="block text-sm font-medium text-white mb-1">
-                       USERNAME
+                    <label class="block text-sm font-medium text-white mb-2">
+                        USERNAME
                     </label>
                     {{ form.username }}
                     {% if form.username.errors %}
@@ -51,8 +64,9 @@
                     {% endif %}
                 </div>
 
+                <!-- Password -->
                 <div>
-                    <label class="block text-sm font-medium text-white mb-1">
+                    <label class="block text-sm font-medium text-white mb-2">
                         PASSWORD
                     </label>
                     {{ form.password }}
@@ -63,12 +77,23 @@
                     {% endif %}
                 </div>
 
-                <div>
+                <!-- Forgot Password -->
+                <div class="text-right">
+                    <a href="{% url 'password_reset' %}" 
+                       class="text-amber-400 hover:text-amber-300 text-sm transition">
+                        Forgot password?
+                    </a>
+                </div>
+
+                <!-- Button -->
                 <button type="submit"
-                        class="w-full border border- white transition-all duration-1000 ease-in-out bg-transparent hover:bg-amber-950/95 text-white font-semibold py-2 rounded-md mb-7">
+                    class="w-full border border-white
+                           bg-transparent hover:bg-amber-950/95
+                           text-white font-semibold py-2 rounded-md
+                           transition duration-300">
                     LOGIN
                 </button>
-                </div>
+
             </form>
 
         </div>
@@ -81,15 +106,13 @@
             if (errorBox) {
                 setTimeout(() => {
                     errorBox.classList.add("opacity-0");
-
                     setTimeout(() => {
                         errorBox.remove();
-                    }, 500); // matches duration-500
-                }, 4000); //disappears after 4 seconds
+                    }, 500);
+                }, 4000);
             }
         });
     </script>
-
 
 </body>
 </html>

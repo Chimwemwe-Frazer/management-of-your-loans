@@ -1,45 +1,102 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="min-h-screen flex flex-col items-center justify-center bg-[#06262d] px-4 py-12">
 
-    <h1>Loans Dashboard</h1>
+    <div class="text-white w-full max-w-5xl rounded-lg overflow-hidden shadow-lg">
 
-        <p>Total Loans: {{ total_loans }}</p>
-        <p>Total Loaned Amount: {{ total_loaned_amount }}</p>
-        <p>Total Paid: {{ total_paid }}</p>
-        <p>Total Remaining: {{ total_remaining }}</p>
-        <p>Overdue Loans: {{ overdue_loans|length }}</p>
+        <!-- Header -->
+        <div class="bg-amber-800/45 py-4">
+            <h2 class="text-2xl font-bold text-center">
+                LOANS DASHBOARD
+            </h2>
+        </div>
 
-        <h2>Loan Details</h2>
-        <table border="1" cellpadding="8">
-            <tr>
-                <th>Loan Amount</th>
-                <th>Remaining Balance</th>
-                <th>Status</th>
-                <th><span style="color: red;">Days Overdue</span></th>
-            </tr>
-            {% for loan in loans %}
-            <tr>
-                <td>{{ loan.amount }}</td>
-                <td>{{ loan.remaining_balance }}</td>
-                <td>
-                    {% if loan.is_paid %}
-                       <span style="color: green;"> Paid </span> 
-                    {% elif loan.is_overdue %}
-                        <span style="color: red;"> Overdue </span>
-                    {% else %}
-                        <span style="color: orange;"> Active </span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if loan.is_overdue %}
-                        {{ loan.days_overdue }}
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
+        <!-- Body -->
+        <div class="p-4 sm:p-6 bg-gray-600 space-y-6 sm:space-y-8">
 
+            <!-- Summary Section -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 text-center">
+
+                <div class="bg-gray-700 p-4 rounded-md">
+                    <p class="text-sm text-gray-300">Total Loans</p>
+                    <p class="text-xl font-bold">{{ total_loans }}</p>
+                </div>
+
+                <div class="bg-gray-700 p-4 rounded-md">
+                    <p class="text-sm text-gray-300">Total Loaned Amount</p>
+                    <p class="text-xl font-bold">{{ total_loaned_amount }}</p>
+                </div>
+
+                <div class="bg-gray-700 p-4 rounded-md">
+                    <p class="text-sm text-gray-300">Total Paid</p>
+                    <p class="text-xl font-bold">{{ total_paid }}</p>
+                </div>
+
+                <div class="bg-gray-700 p-4 rounded-md">
+                    <p class="text-sm text-gray-300">Total Remaining</p>
+                    <p class="text-xl font-bold">{{ total_remaining }}</p>
+                </div>
+
+                <div class="bg-gray-700 p-4 rounded-md sm:col-span-2 md:col-span-3">
+                    <p class="text-sm text-gray-300">Overdue Loans</p>
+                    <p class="text-xl font-bold text-red-400">
+                        {{ overdue_loans|length }}
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Loan Table -->
+            <div class="overflow-x-auto">
+                <h3 class="text-xl font-semibold mb-4 text-center">
+                    Loan Details
+                </h3>
+
+                <table class="w-full text-left border-collapse text-sm min-w-[500px] sm:min-w-full">
+                    <thead>
+                        <tr class="bg-gray-700 text-gray-200 uppercase text-xs sm:text-sm tracking-wider">
+                            <th class="p-2 sm:p-3">Loan Amount</th>
+                            <th class="p-2 sm:p-3">Remaining Balance</th>
+                            <th class="p-2 sm:p-3">Status</th>
+                            <th class="p-2 sm:p-3 text-red-400">Days Overdue</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for loan in loans %}
+                        <tr class="border-t border-gray-500 hover:bg-gray-700 transition duration-200">
+
+                            <td class="p-2 sm:p-3 font-medium">{{ loan.amount }}</td>
+                            <td class="p-2 sm:p-3">{{ loan.remaining_balance }}</td>
+                            <td class="p-2 sm:p-3">
+                                {% if loan.is_paid %}
+                                    <span class="text-green-400 font-semibold">Paid</span>
+                                {% elif loan.is_overdue %}
+                                    <span class="text-red-400 font-semibold">Overdue</span>
+                                {% else %}
+                                    <span class="text-amber-400 font-semibold">Active</span>
+                                {% endif %}
+                            </td>
+                            <td class="p-2 sm:p-3">
+                                {% if loan.is_overdue %}
+                                    <span class="text-red-400 font-semibold">{{ loan.days_overdue }}</span>
+                                {% else %}-{% endif %}
+                            </td>
+
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="p-6 text-center text-gray-300">
+                                No loans available.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -18,22 +18,62 @@ from .models import Borrower, Loan, Payment
 def landing_page(request):
     return render(request, "loans/landing.html")
 
+# def register(request):
+#     if request.method == "POST":
+#         user = User.objects.create_user(
+#             username=request.POST['username'],
+#             email=request.POST['email'],
+#             password=request.POST['password']
+#         )
+
+#         Borrower.objects.create(
+#             user=user,
+#             name=request.POST['name'],
+#             phone=request.POST['phone'],
+#             address=request.POST['address'],
+#         )
+
+#         login(request, user)
+#         return redirect('loan_list')
+
+#     return render(request, 'loans/register.html')
 def register(request):
     if request.method == "POST":
-        user = User.objects.create_user(
-            username=request.POST['username'],
-            password=request.POST['password']
-        )
+       
+        username = request.POST['username'].strip().replace(" ", "_")
+        email = request.POST.get('email', '').strip()
+        password = request.POST['password']
 
-        Borrower.objects.create(
-            user=user,
-            name=request.POST['name'],
-            phone=request.POST['phone'],
-            address=request.POST['address'],
-        )
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "This username is already taken.")
+            return render(request, 'loans/register.html')
 
-        login(request, user)
-        return redirect('loan_list')
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "An account with this email already exists.")
+            return render(request, 'loans/register.html')
+
+        try:
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password
+            )
+
+            Borrower.objects.create(
+                user=user,
+                name=request.POST['name'],
+                phone=request.POST['phone'],
+                address=request.POST['address'],
+            )
+
+            # Log the user in and redirect
+            login(request, user)
+            messages.success(request, f"Welcome {username}! Your account was created successfully.")
+            return redirect('loan_list')
+
+        except Exception as e:
+            messages.error(request, f"An error occurred: {e}")
+            return render(request, 'loans/register.html')
 
     return render(request, 'loans/register.html')
 
@@ -104,7 +144,7 @@ def loan_list(request):
         borrower=borrower
     ).filter(
         Q(is_paid=False) | Q(paid_date__gte=three_days_ago)
-    )
+    ).order_by('-id')
 
     paid_loans_exist = Loan.objects.filter(
         borrower=borrower,
