@@ -96,9 +96,9 @@
     <div id="messages-container" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 space-y-3">
         {% for message in messages %}
             <div class="message-item bg-gray-800/90 text-white px-6 py-3 rounded-lg shadow-lg text-center max-w-md mx-auto
-                        {% if message.tags == 'success' %} border-l-4 border-green-400 {% endif %}
-                        {% if message.tags == 'error' %} border-l-4 border-red-500 {% endif %}
-                        {% if message.tags == 'warning' %} border-l-4 border-yellow-400 {% endif %}">
+                        {% if message.tags == 'success' %} border-l-4 bg-green-500 {% endif %}
+                        {% if message.tags == 'error' %} border-l-4 bg-red-700 {% endif %}
+                        {% if message.tags == 'warning' %} border-l-4 bg-yellow-700{% endif %}">
                 {{ message }}
             </div>
         {% endfor %}
