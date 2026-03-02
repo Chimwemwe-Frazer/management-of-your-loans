@@ -31,7 +31,11 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 
-ALLOWED_HOSTS = ['.onrender.com , 127.0.0.1, localhost']
+ALLOWED_HOSTS = ['.onrender.com','127.0.0.1','localhost']
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://management-of-your-loans.onrender.com"
+]
 
 
 # Application definition
