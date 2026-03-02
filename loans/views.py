@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Q
+from django.http import HttpResponse
 
 
 from .models import Borrower, Loan, Payment
@@ -245,6 +246,17 @@ def upload_documents(request):
         borrower.save()
 
     return render(request, "upload_documents.html")
+
+def create_superuser(request):
+    # Check if a superuser already exists
+    if not User.objects.filter(is_superuser=True).exists():
+        User.objects.create_superuser(
+            username='Chimwemwe-Frazer',              
+            email='chimwemwefrazer10@gmail.com', 
+            password='Guezennec&2,'   
+        )
+        return HttpResponse("Superuser created successfully!")
+    return HttpResponse("Superuser already exists.")
 
 
 # class CustomLoginView(LoginView):
