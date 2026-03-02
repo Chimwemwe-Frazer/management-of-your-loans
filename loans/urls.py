@@ -1,13 +1,11 @@
 from django.urls import path
 from . import views
 from django.conf import settings
-from .views import create_superuser
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.landing_page, name='landing'),
     path('register/', views.register, name='register'),
-    path('create-superuser/', create_superuser),
     path('loans/', views.loan_list, name='loan_list'),
     path('apply/', views.apply_for_loan, name='apply_for_loan'),
     path('accounts/login/', views.CustomLoginView.as_view(), name='login'),

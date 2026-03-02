@@ -247,16 +247,6 @@ def upload_documents(request):
 
     return render(request, "upload_documents.html")
 
-def create_superuser(request):
-    # Check if a superuser already exists
-    if not User.objects.filter(is_superuser=True).exists():
-        User.objects.create_superuser(
-            username='Chimwemwe-Frazer',              
-            email='chimwemwefrazer10@gmail.com', 
-            password='Guezennec&2,'   
-        )
-        return HttpResponse("Superuser created successfully!")
-    return HttpResponse("Superuser already exists.")
 
 
 # class CustomLoginView(LoginView):
