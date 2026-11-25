@@ -39,6 +39,18 @@
         <!-- Body -->
         <div class="p-8 bg-gray-600 space-y-6">
 
+            {% if messages %}
+                <div class="space-y-2" role="status" aria-live="polite">
+                    {% for message in messages %}
+                        <p class="rounded-md border px-4 py-3 text-sm
+                            {% if 'error' in message.tags %}border-red-400 bg-red-900/70 text-white
+                            {% else %}border-green-400 bg-green-900/70 text-white{% endif %}">
+                            {{ message }}
+                        </p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
             <form method="post" class="space-y-6">
                 {% csrf_token %}
 
