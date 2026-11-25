@@ -21,6 +21,7 @@ db.sqlite3-journal
 # Django generated files
 staticfiles/
 media/
+private_media/
 
 # IDE and editor files
 .vscode/

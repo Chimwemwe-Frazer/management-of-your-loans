@@ -7,12 +7,14 @@ from django.views.decorators.cache import never_cache
 from django.urls import reverse_lazy
 from django.contrib.auth import login
 from django.contrib import messages
+from django.http import FileResponse, Http404
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Q
-from django.http import HttpResponse
+from pathlib import Path
 
 
+from .forms import BorrowerDocumentsForm
 from .models import Borrower, Loan, Payment
 
 
@@ -100,19 +102,27 @@ def apply_for_loan(request):
 
     if request.method == "POST":
         if not has_previous_loan:
-            national_id = request.FILES.get("national_id_image")
-            residence_map = request.FILES.get("residence_map_image")
-
-            if not national_id or not residence_map:
+            documents_form = BorrowerDocumentsForm(
+                request.POST,
+                request.FILES,
+                instance=borrower,
+            )
+            if (
+                not request.FILES.get("national_id_image")
+                or not request.FILES.get("residence_map_image")
+            ):
                 messages.error(
                     request,
                     "National ID and Residence Map are required for your first loan."
                 )
                 return redirect("apply_for_loan")
-
-            borrower.national_id_image = national_id
-            borrower.residence_map_image = residence_map
-            borrower.save()
+            if not documents_form.is_valid():
+                messages.error(
+                    request,
+                    "Upload valid JPEG, PNG, or WebP documents no larger than 5 MB each."
+                )
+                return redirect("apply_for_loan")
+            documents_form.save()
         amount = request.POST.get("amount")
         due_date = timezone.now().date() + timedelta(days=30)
 
@@ -238,14 +248,68 @@ def dashboard(request):
 @login_required
 @never_cache
 def upload_documents(request):
-    borrower = Borrower.objects.get(user=request.user)
+    borrower = get_object_or_404(Borrower, user=request.user)
+    form = BorrowerDocumentsForm(
+        request.POST or None,
+        request.FILES or None,
+        instance=borrower,
+    )
 
     if request.method == "POST":
-        borrower.national_id_image = request.FILES.get('national_id_image')
-        borrower.residence_map_image = request.FILES.get('residence_map_image')
-        borrower.save()
+        has_upload = any(
+            request.FILES.get(field_name)
+            for field_name in ("national_id_image", "residence_map_image")
+        )
+        if not has_upload:
+            messages.error(request, "Choose at least one document to upload.")
+        elif not form.is_valid():
+            messages.error(
+                request,
+                "Upload valid JPEG, PNG, or WebP documents no larger than 5 MB each."
+            )
+        else:
+            form.save()
+            messages.success(request, "Documents updated successfully.")
+            return redirect("upload_documents")
 
-    return render(request, "upload_documents.html")
+    return render(request, "upload_documents.html", {
+        "borrower": borrower,
+        "form": form,
+    })
+
+
+@login_required
+def borrower_document(request, borrower_id, document_type):
+    borrower = get_object_or_404(Borrower, pk=borrower_id)
+    if not request.user.is_staff and borrower.user_id != request.user.id:
+        raise Http404
+
+    document_fields = {
+        "national_id": "national_id_image",
+        "residence_map": "residence_map_image",
+    }
+    field_name = document_fields.get(document_type)
+    if field_name is None:
+        raise Http404
+
+    document = getattr(borrower, field_name)
+    if not document or not document.storage.exists(document.name):
+        raise Http404
+
+    try:
+        file_handle = document.open("rb")
+    except FileNotFoundError:
+        raise Http404
+
+    response = FileResponse(
+        file_handle,
+        as_attachment=True,
+        filename=Path(document.name).name,
+        content_type="application/octet-stream",
+    )
+    response["Cache-Control"] = "private, no-store"
+    response["X-Content-Type-Options"] = "nosniff"
+    return response
 
 
 

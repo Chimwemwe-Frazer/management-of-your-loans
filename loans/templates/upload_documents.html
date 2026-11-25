@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-[#06262d] px-4 py-12">
+    <div class="text-white w-full max-w-md rounded-lg overflow-hidden shadow-lg">
+        <div class="bg-amber-800/45 py-4">
+            <h2 class="text-2xl font-bold text-center">UPDATE DOCUMENTS</h2>
+        </div>
+
+        <div class="p-6 bg-gray-600 space-y-6">
+            <p class="text-sm text-gray-200">
+                Upload JPEG, PNG, or WebP images no larger than 5 MB each.
+            </p>
+
+            <form method="post" enctype="multipart/form-data" class="space-y-5">
+                {% csrf_token %}
+
+                <div>
+                    <label for="{{ form.national_id_image.id_for_label }}"
+                           class="block text-sm font-medium mb-1">
+                        National ID
+                    </label>
+                    <input type="file" name="national_id_image"
+                           id="{{ form.national_id_image.id_for_label }}"
+                           accept="image/jpeg,image/png,image/webp"
+                           class="w-full text-sm">
+                    {{ form.national_id_image.errors }}
+                    {% if borrower.national_id_image %}
+                    <a class="text-amber-300 underline"
+                       href="{% url 'borrower_document' borrower.id 'national_id' %}">
+                        Download current National ID
+                    </a>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.residence_map_image.id_for_label }}"
+                           class="block text-sm font-medium mb-1">
+                        Residence map
+                    </label>
+                    <input type="file" name="residence_map_image"
+                           id="{{ form.residence_map_image.id_for_label }}"
+                           accept="image/jpeg,image/png,image/webp"
+                           class="w-full text-sm">
+                    {{ form.residence_map_image.errors }}
+                    {% if borrower.residence_map_image %}
+                    <a class="text-amber-300 underline"
+                       href="{% url 'borrower_document' borrower.id 'residence_map' %}">
+                        Download current residence map
+                    </a>
+                    {% endif %}
+                </div>
+
+                <button type="submit"
+                        class="w-full border border-white hover:bg-amber-950/95 font-semibold py-2 rounded-md">
+                    SAVE DOCUMENTS
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

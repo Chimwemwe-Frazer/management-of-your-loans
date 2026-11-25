@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from .storage import PrivateDocumentStorage
+from .validators import validate_document_image
 
 
 # creation of models
@@ -11,11 +13,15 @@ class Borrower(models.Model):
     address = models.TextField(blank=True)
     national_id_image = models.ImageField(
         upload_to="national_ids/",
+        storage=PrivateDocumentStorage(),
+        validators=[validate_document_image],
         null=True,
         blank=True
     )
     residence_map_image = models.ImageField(
         upload_to="residence_maps/",
+        storage=PrivateDocumentStorage(),
+        validators=[validate_document_image],
         null=True,
         blank=True
     )

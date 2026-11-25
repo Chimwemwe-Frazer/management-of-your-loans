@@ -60,6 +60,11 @@
                 DASHBOARD
             </a>
 
+            <a href="{% url 'upload_documents' %}" class="px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:scale-105
+                {% if request.resolver_match.url_name == 'upload_documents' %} bg-amber-700/40 text-white border-b-2 border-blue-400 {% else %} text-white/90 hover:bg-amber-800/35 {% endif %}">
+                DOCUMENTS
+            </a>
+
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="px-3 py-2 rounded-md bg-red-700 text-white hover:bg-red-600 transition-all duration-300 hover:scale-105 text-sm font-medium">
@@ -83,6 +88,10 @@
         <a href="{% url 'dashboard' %}" class="block px-3 py-2 rounded-md text-sm font-medium text-white/90 hover:text-white hover:bg-amber-800/35
             {% if request.resolver_match.url_name == 'dashboard' %} bg-amber-700/40 {% endif %}">
             DASHBOARD
+        </a>
+        <a href="{% url 'upload_documents' %}" class="block px-3 py-2 rounded-md text-sm font-medium text-white/90 hover:text-white hover:bg-amber-800/35
+            {% if request.resolver_match.url_name == 'upload_documents' %} bg-amber-700/40 {% endif %}">
+            DOCUMENTS
         </a>
         <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
@@ -123,6 +132,7 @@
                 <li><a href="{% url 'loan_list' %}" class="hover:text-white {% if request.resolver_match.url_name == 'loan_list' %} text-purple-500 {% endif %}">My Loans</a></li>
                 <li><a href="{% url 'apply_for_loan' %}" class="hover:text-white {% if request.resolver_match.url_name == 'apply_for_loan' %} text-purple-500 {% endif %}">Apply</a></li>
                 <li><a href="{% url 'dashboard' %}" class="hover:text-white {% if request.resolver_match.url_name == 'dashboard' %} text-purple-500 {% endif %}">Dashboard</a></li>
+                <li><a href="{% url 'upload_documents' %}" class="hover:text-white {% if request.resolver_match.url_name == 'upload_documents' %} text-purple-500 {% endif %}">Documents</a></li>
             </ul>
         </div>
 

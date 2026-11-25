@@ -1,5 +1,6 @@
 from django.contrib.auth.forms import AuthenticationForm
 from django import forms
+from .models import Borrower
 
 class StyledAuthenticationForm(AuthenticationForm):
     error_messages = {
@@ -25,3 +26,13 @@ class StyledAuthenticationForm(AuthenticationForm):
             
         })
     )
+
+
+class BorrowerDocumentsForm(forms.ModelForm):
+    class Meta:
+        model = Borrower
+        fields = ("national_id_image", "residence_map_image")
+        labels = {
+            "national_id_image": "National ID",
+            "residence_map_image": "Residence map",
+        }
