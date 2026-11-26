@@ -72,6 +72,21 @@
                         <span>{{ loan.remaining_balance }}</span>
                     </div>
 
+                    <div class="text-sm">
+                        <div class="flex justify-between mb-1">
+                            <span class="font-semibold">Repayment Progress:</span>
+                            <span>{{ loan.repayment_progress }}%</span>
+                        </div>
+                        <div class="h-2 overflow-hidden rounded-full bg-gray-500" role="progressbar"
+                             aria-label="Repayment progress"
+                             aria-valuemin="0"
+                             aria-valuemax="100"
+                             aria-valuenow="{{ loan.repayment_progress }}">
+                            <div class="h-full bg-green-400"
+                                 style="width: {{ loan.repayment_progress }}%;"></div>
+                        </div>
+                    </div>
+
                     <!-- Buttons -->
                     <div class="space-y-2 pt-2">
 
@@ -116,6 +131,7 @@
                             <th class="p-3">Due Date</th>
                             <th class="p-3">Status</th>
                             <th class="p-3">Remaining Balance</th>
+                            <th class="p-3">Progress</th>
                             <th class="p-3">Action</th>
                             <th class="p-3">History</th>
                         </tr>
@@ -163,6 +179,23 @@
 
                             <td class="p-3 uppercase">
                                 {{ loan.remaining_balance }}
+                            </td>
+
+                            <td class="p-3">
+                                <div class="flex items-center gap-2">
+                                    <div class="h-2 w-24 overflow-hidden rounded-full bg-gray-500"
+                                         role="progressbar"
+                                         aria-label="Repayment progress"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100"
+                                         aria-valuenow="{{ loan.repayment_progress }}">
+                                        <div class="h-full bg-green-400"
+                                             style="width: {{ loan.repayment_progress }}%;"></div>
+                                    </div>
+                                    <span class="text-xs font-semibold">
+                                        {{ loan.repayment_progress }}%
+                                    </span>
+                                </div>
                             </td>
 
                             <td class="p-3">

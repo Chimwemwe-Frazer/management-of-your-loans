@@ -1,6 +1,8 @@
 import tempfile
 from pathlib import Path
 from io import BytesIO
+from decimal import Decimal
+from datetime import date
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -9,7 +11,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from PIL import Image
 
-from .models import Borrower, Loan
+from .models import Borrower, Loan, Payment
 from .validators import MAX_DOCUMENT_SIZE, validate_document_image
 
 
@@ -17,6 +19,30 @@ def image_upload(name):
     image_data = BytesIO()
     Image.new("RGB", (2, 2), color="blue").save(image_data, format="PNG")
     return SimpleUploadedFile(name, image_data.getvalue(), content_type="image/png")
+
+
+class RepaymentProgressTests(TestCase):
+    def setUp(self):
+        user = User.objects.create_user(username="progress-borrower", password="test-pass")
+        borrower = Borrower.objects.create(
+            user=user,
+            name="Progress Borrower",
+            phone="555-0101",
+        )
+        self.loan = Loan.objects.create(
+            borrower=borrower,
+            amount=Decimal("100.00"),
+            due_date=date(2026, 12, 31),
+        )
+
+    def test_repayment_progress_tracks_paid_amount(self):
+        self.assertEqual(self.loan.repayment_progress(), 0)
+
+        Payment.objects.create(loan=self.loan, amount_paid=Decimal("25.00"))
+        self.assertEqual(self.loan.repayment_progress(), 25)
+
+        Payment.objects.create(loan=self.loan, amount_paid=Decimal("75.00"))
+        self.assertEqual(self.loan.repayment_progress(), 100)
 
 
 class BorrowerDocumentTests(TestCase):

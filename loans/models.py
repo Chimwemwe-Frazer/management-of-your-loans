@@ -57,6 +57,13 @@ class Loan(models.Model):
 
     def remaining_balance(self):
         return self.amount - self.total_paid()
+
+    def repayment_progress(self):
+        if not self.amount:
+            return 0
+
+        progress = (self.total_paid() / self.amount) * 100
+        return max(0, min(100, round(progress)))
     
     def is_overdue(self):
         return not self.is_paid and timezone.now().date() > self.due_date
