@@ -40,6 +40,23 @@
                         <span>{{ loan.due_date }}</span>
                     </div>
 
+                    <div class="flex justify-between text-sm">
+                        <span class="font-semibold">Deadline:</span>
+                        {% if loan.is_paid %}
+                            <span class="text-green-400 font-semibold">Paid</span>
+                        {% elif loan.is_overdue %}
+                            <span class="text-red-400 font-semibold">
+                                {{ loan.days_overdue }} day{{ loan.days_overdue|pluralize }} overdue
+                            </span>
+                        {% elif loan.days_until_due == 0 %}
+                            <span class="text-amber-400 font-semibold">Due today</span>
+                        {% else %}
+                            <span class="text-amber-300 font-semibold">
+                                {{ loan.days_until_due }} day{{ loan.days_until_due|pluralize }} remaining
+                            </span>
+                        {% endif %}
+                    </div>
+
                     <div class="text-sm">
                         <span class="font-semibold">Status:</span>
                         <div class="mt-1">
@@ -129,6 +146,7 @@
                             <th class="p-3">Borrower</th>
                             <th class="p-3">Amount</th>
                             <th class="p-3">Due Date</th>
+                            <th class="p-3">Deadline</th>
                             <th class="p-3">Status</th>
                             <th class="p-3">Remaining Balance</th>
                             <th class="p-3">Progress</th>
@@ -151,6 +169,22 @@
 
                             <td class="p-3 uppercase">
                                 {{ loan.due_date }}
+                            </td>
+
+                            <td class="p-3">
+                                {% if loan.is_paid %}
+                                    <span class="text-green-400 font-semibold">Paid</span>
+                                {% elif loan.is_overdue %}
+                                    <span class="text-red-400 font-semibold">
+                                        {{ loan.days_overdue }} day{{ loan.days_overdue|pluralize }} overdue
+                                    </span>
+                                {% elif loan.days_until_due == 0 %}
+                                    <span class="text-amber-400 font-semibold">Due today</span>
+                                {% else %}
+                                    <span class="text-amber-300 font-semibold">
+                                        {{ loan.days_until_due }} day{{ loan.days_until_due|pluralize }} remaining
+                                    </span>
+                                {% endif %}
                             </td>
 
                             <td class="p-3">

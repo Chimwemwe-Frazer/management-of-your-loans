@@ -9,6 +9,8 @@ from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.urls import reverse
+from django.utils import timezone
+from datetime import timedelta
 from PIL import Image
 
 from .models import Borrower, Loan, Payment
@@ -43,6 +45,18 @@ class RepaymentProgressTests(TestCase):
 
         Payment.objects.create(loan=self.loan, amount_paid=Decimal("75.00"))
         self.assertEqual(self.loan.repayment_progress(), 100)
+
+    def test_days_until_due_tracks_upcoming_and_overdue_loans(self):
+        today = timezone.now().date()
+        self.loan.due_date = today + timedelta(days=5)
+        self.loan.save(update_fields=["due_date"])
+        self.assertEqual(self.loan.days_until_due(), 5)
+        self.assertFalse(self.loan.is_overdue())
+
+        self.loan.due_date = today - timedelta(days=3)
+        self.loan.save(update_fields=["due_date"])
+        self.assertTrue(self.loan.is_overdue())
+        self.assertEqual(self.loan.days_overdue(), 3)
 
 
 class BorrowerDocumentTests(TestCase):

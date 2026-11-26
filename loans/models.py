@@ -73,6 +73,11 @@ class Loan(models.Model):
             return (timezone.now().date() - self.due_date).days
         return 0
 
+    def days_until_due(self):
+        if self.is_paid:
+            return 0
+        return (self.due_date - timezone.now().date()).days
+
 
 class Payment(models.Model):
     loan = models.ForeignKey(Loan, on_delete=models.CASCADE)
